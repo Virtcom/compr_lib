@@ -41,6 +41,8 @@ pub fn packstream(filestream: String, packperbite: u16) -> String {
     let mut start: usize = packperbite.into();
     let mut end: usize = (packperbite*2).into();
     let mut outstring = String::new();
+    outstring += oldchunk;
+    outstring += "x1\n";
     while end <= filestream.len() {
         let chunk = &filestream[start..end];
         if chunk == oldchunk {
@@ -87,7 +89,7 @@ mod tests {
     fn it_works() {
         let file_path = "Cargo.toml";
         let binding = read_data_bin(file_path).expect("Failed to read binary data");
-        write_data(packstream(binding, 8*10), "temp.sa").expect("Failed to write binary data");
+        write_data(packstream(binding, 8*12), "temp.sa").expect("Failed to write binary data");
         let binding = read_data("temp.sa").expect("Failed to read binary data from temp file");
         write_data_bin(unpackstream(binding), "Output").expect("Failed to write binary data to Output");
     }
