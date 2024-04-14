@@ -81,7 +81,6 @@ pub fn unpackstream(filestream: String) -> String {
                     oustring += &parts[0];
                 }
             }
-        println!("{}", parts[0]);
         }
     }
     oustring
