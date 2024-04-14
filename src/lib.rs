@@ -30,19 +30,50 @@ pub fn read_data(file_path: &str) -> Result<String> {
     let mut f = File::open(file_path)?;
     let mut buffer = Vec::new();
     f.read_to_end(&mut buffer)?;
-    let contents = String::from_utf8(buffer).expect("Found invalid UTF-8");
+    let contents = String::from_utf8(buffer).map_err(|e| std::io::Error::new(std::io::ErrorKind::InvalidData, e))?;
     Ok(contents)
 }
+
+pub fn packstream(filestream: String, packperbite: u16) -> String {
+    let mut oldchunk = &filestream[0..packperbite.into()];
+    let mut counter = 1;
+    let size : usize = packperbite.into();
+    let mut start: usize = packperbite.into();
+    let mut end: usize = (packperbite*2).into();
+    let mut outstring = String::new();
+    while end <= filestream.len() {
+        let chunk = &filestream[start..end];
+        if chunk == oldchunk {
+            counter += 1;
+        }
+        else {
+            outstring += chunk;
+            outstring += "x";
+            outstring += &counter.to_string();
+            outstring += "n";
+            counter = 1;
+        }
+        oldchunk = chunk;
+        start = end;
+        end += size;
+    }
+    if start < filestream.len() {
+        outstring += &filestream[start..];
+        outstring += "x1n"; 
+    }
+    outstring
+}
+
 
 #[cfg(test)]
 mod tests {
     use super::*;
     #[test]
     fn it_works() {
-        let file_path = "Cargo.toml";
+        let file_path = "test.npf";
         let binding = read_data_bin(file_path).expect("Failed to read binary data");
-        write_data(binding, "temp").expect("Failed to write binary data");
-        let binding = read_data("temp").expect("Failed to read binary data from temp file");
-        write_data_bin(binding, "Output").expect("Failed to write binary data to Output");
+        write_data(packstream(binding, 8*10), "temp").expect("Failed to write binary data");
+        //let binding = read_data("temp").expect("Failed to read binary data from temp file");
+        //write_data_bin(binding, "Output").expect("Failed to write binary data to Output");
     }
 }
