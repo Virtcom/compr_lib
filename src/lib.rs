@@ -41,15 +41,13 @@ pub fn packstream(filestream: String, packperbite: u16) -> String {
     let mut start: usize = packperbite.into();
     let mut end: usize = (packperbite*2).into();
     let mut outstring = String::new();
-    outstring += oldchunk;
-    outstring += "x1\n";
     while end <= filestream.len() {
         let chunk = &filestream[start..end];
         if chunk == oldchunk {
             counter += 1;
         }
         else {
-            outstring += chunk;
+            outstring += oldchunk;
             outstring += "x";
             outstring += &counter.to_string();
             outstring += "\n";
@@ -58,6 +56,12 @@ pub fn packstream(filestream: String, packperbite: u16) -> String {
         oldchunk = chunk;
         start = end;
         end += size;
+        if end > filestream.len(){
+            outstring += oldchunk;
+            outstring += "x";
+            outstring += &counter.to_string();
+            outstring += "\n";
+        }
     }
     if start < filestream.len() {
         outstring += &filestream[start..];
@@ -73,8 +77,9 @@ pub fn unpackstream(filestream: String) -> String {
         let parts: Vec<&str> = chunk.split('x').collect();
         if parts.len() == 2 {
             if let Ok(num) = parts[1].parse::<u64>() {
-                let multiplied = parts[0].repeat(num.try_into().unwrap());
-                oustring += &multiplied.to_string();
+                for _ in 1..num+1 {
+                    oustring += &parts[0];
+                }
             }
         println!("{}", parts[0]);
         }
@@ -89,7 +94,7 @@ mod tests {
     fn it_works() {
         let file_path = "Cargo.toml";
         let binding = read_data_bin(file_path).expect("Failed to read binary data");
-        write_data(packstream(binding, 8*12), "temp.sa").expect("Failed to write binary data");
+        write_data(packstream(binding, 1), "temp.sa").expect("Failed to write binary data");
         let binding = read_data("temp.sa").expect("Failed to read binary data from temp file");
         write_data_bin(unpackstream(binding), "Output").expect("Failed to write binary data to Output");
     }
