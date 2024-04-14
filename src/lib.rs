@@ -72,7 +72,7 @@ pub fn unpackstream(filestream: String) -> String {
     for chunk in chunks {
         let parts: Vec<&str> = chunk.split('x').collect();
         if parts.len() == 2 {
-            if let Ok(num) = parts[1].parse::<i32>() {
+            if let Ok(num) = parts[1].parse::<u64>() {
                 let multiplied = parts[0].repeat(num.try_into().unwrap());
                 oustring += &multiplied.to_string();
             }
