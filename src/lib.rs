@@ -1,6 +1,5 @@
 use std::fs::File;
 use std::io::{Read, Write, Result};
-use std::process::Output;
 
 pub fn read_data_bin(file_path: &str) -> Result<String> {
     let mut file = File::open(file_path)?;
