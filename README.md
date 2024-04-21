@@ -1,26 +1,13 @@
-<h1 align="center" id="title">compr_lib</h1>
-
-<p id="description">Simple Library for compressing files</p>
-
-  
-  
-<h2>🧐 Features</h2>
-
-Here're some of the project's best features:
-
-*   compressing
-*   uncompressing
-
-<h2>🛠️ Installation Steps:</h2>
-
-<p>1. Intigrate it into the cargo.toml</p>
-
-<p>2. Use it</p>
-
-  
-  
-<h2>💻 Built with</h2>
-
-Technologies used in the project:
-
-*   Rust
+# Compr_lib
+Compression Library
+## Concept
+The concept of compr_lib is to be a simple library for compressing files but readable by human eye.
+It uses bytestream x number of repetans and new line for a different bytestream. For Example:
+```Concept
+0100100001101001x2\n
+0000101001001110x1\n
+0110111101001110x2\n
+01101111x1
+```
+## Installation
+just add the github to the Cargo.conf
